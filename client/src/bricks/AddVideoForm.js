@@ -12,7 +12,6 @@ export const AddVideoForm = (props) => {
     const [shown1, setShown1] = useState(true)
     const [disable, setDisable] = useState(true);
 
-    console.log(formDataVideo)
 
 
     const createVideo = () => { // creating a new object with a title, then id is added on the backend side
