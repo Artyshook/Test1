@@ -1,16 +1,19 @@
 import {Button, Modal, Form} from "react-bootstrap";
 import {useState} from "react";
 import axios from "axios";
+import TokenAlert from "./TokenAlert";
 
 export const AddVideoForm = (props) => {
     const [formData, setFormData] = useState(false);
+    const [tokenForm, setTokenForm] = useState(false);
     const [formDataVideo, setFormDataVideo] = useState()
     const [id, setId]=useState()
+    const [token, SetToken] = useState()
+    const [shown1, setShown1] = useState(true)
+    const [disable, setDisable] = useState(true);
 
-    // console.log(formData)
-    // console.log(formDataVideo)
-    // console.log(props.videoList.id)
-    console.log(id)
+    console.log(formDataVideo)
+
 
     const createVideo = () => { // creating a new object with a title, then id is added on the backend side
         fetch("video/create", {
@@ -24,14 +27,17 @@ export const AddVideoForm = (props) => {
             .then(response => response.json())
             .then(data=> {
                 props.setVideoList(current => {
-                    // const newList = current.slice();//making a copy of array
-                    // newList.push(data)
-                    // return newList
-                    return [...current, {data,isload:false}];
+                    const newList = current.slice();//making a copy of array
+                    newList.push(data)
+                    return newList
+                    // return [...current, {data,isload:false}];
                 })
                 // props.setFormShown(false); - change after
                 setId(data.id)
-                alert(data.token) // show to the user a token for update/delete video
+                SetToken(data.token)
+                setDisable(false)
+                // alert("You token for deliting this video:" + token)
+                // show to the user a token for update/delete video
             })
     }
 
@@ -42,45 +48,60 @@ export const AddVideoForm = (props) => {
         form_data.append("id", id)
         form_data.append("file", formDataVideo)
 
-            for (let value of form_data.values()) {
+        for (let value of form_data.values()) {
             console.log(value);
         }
 
         await axios.post('/video/upload', form_data, {
-             headers: {
+            headers: {
                 "Content-Type": "multipart/form-data"
             },
         })
-        .then((response)=> {
-
-            console.log(response.data);
-            props.setVideoList(videoList =>{
-                return videoList.map(el =>{
-                    if ( el.id == response.data.id){
-                        el.isLoad=true
-                        return el
-                    }
-                    return el
-                });
-
-            });
-            // props.setVideoList(response.data)
-        })
-        .catch(error=>error)
+            .then(response=>response)
+            .then (props.setFormShown(false))
+            .catch(error=>error)
 
     }
 
 
 
-    // const mergingIdAndFile = () => {
-    //     let a = Object.keys(props.videoList).pop(); //getting id of the last added object/ should press "Save Changes" before adding a video file to get the latest id of an object from server
-    //     let b = formDataVideo //uploaded video
-    //     const c = {}
-    //     c.id = a
-    //     c.file = b
-    //     return c // merged id and video to a new variable for sending on server
+    // async function uploadVideo() {
+    //
+    //     const form_data = new FormData()
+    //     form_data.append("id", id)
+    //     form_data.append("file", formDataVideo)
+    //
+    //         for (let value of form_data.values()) {
+    //         console.log(value);
+    //     }
+    //
+    //     await axios.post('/video/upload', form_data, {
+    //          headers: {
+    //             "Content-Type": "multipart/form-data"
+    //         },
+    //     })
+    //
+    //         .then(response=> response)
+    //     // .then((response)=> {
+    //     //
+    //     //        console.log(response.data);
+    //     //     props.setVideoList(videoList =>{
+    //     //         return videoList.map(el =>{
+    //     //             if ( el.id === response.data.id){
+    //     //                 el.isLoad=true
+    //     //                 return el
+    //     //             }
+    //     //             return el
+    //     //         });
+    //     //
+    //     //     });
+    //     //     // props.setVideoList(response.data)
+    //     // })
+    //     .catch(error=>error)
     // }
-    // console.log(mergingIdAndFile())
+
+
+    const tokenForms = () => {return  <TokenAlert token={token} setShown1={setShown1} shown1={shown1}/>}
 
 
     return (
@@ -119,7 +140,7 @@ export const AddVideoForm = (props) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={uploadVideo}>
+                    <Button variant="secondary" onClick={(event)=> {uploadVideo(); tokenForms()}} disabled={disable}>
                         Upload video
                     </Button>
                 </Modal.Footer>

@@ -31,7 +31,7 @@ import {mdiPlus} from "@mdi/js";
                             <DeliteVideo formShown1={formShown1}
                                          setFormShown1={setFormShown1}
                                          videoID={props.video.id} // Video id for delete video
-                                         onClick={() => setFormShown1(true)}/>
+                                         />
                         <Button variant="info" onClick={() => setFormShown1(true)}>
                             Delete video
                         </Button>

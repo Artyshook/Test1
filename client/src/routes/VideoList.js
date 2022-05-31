@@ -45,7 +45,7 @@ export const VideoList = () => {
 
 
         const getVideList = () => {
-            debugger
+
             const videoHtmlList = [];
             videoList?.forEach(video => {
                 videoHtmlList.push(<VideoTile video={video}/>)

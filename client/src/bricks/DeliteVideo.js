@@ -17,6 +17,7 @@ const DeliteVideo = (props) => {
             .then(function (response) {
                 console.log(response);
             })
+            .then((props.setFormShown1(false)))
     }
 
     return (
@@ -32,7 +33,6 @@ const DeliteVideo = (props) => {
                             <Form.Label>Add the token for deleting video</Form.Label>
                             <Form.Control as="textarea" rows={3}
                                           onChange={(e)=>{setTokenData(e.currentTarget.value)}}//??
-
                             />
                         </Form.Group>
                         <Button variant="primary" onClick={deleteVideoHandler} >
